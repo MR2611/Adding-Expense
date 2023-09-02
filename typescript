@@ -1,0 +1,46 @@
+app.post('/delete', (req, res) => {
+  const idToDelete = req.body.id;
+
+  const index = todoList.findIndex((item) => item.id === idToDelete);
+
+  if (index === -1) {
+    // Item not found, send a 404 response
+    res.status(404).json({ message: 'Item not found' });
+  } else {
+    // Remove the item from the list
+    todoList.splice(index, 1);
+    res.json({ message: 'Item deleted' });
+  }
+});
+const todoList: { id: number; text: string }[] = [];
+
+app.post('/add', (req, res) => {
+  const newItem = {
+    id: todoList.length + 1,
+    text: req.body.text,
+  };
+
+  todoList.push(newItem);
+  res.json(newItem);
+});
+
+app.post('/edit', (req, res) => {
+  const idToEdit = req.body.id;
+  const newText = req.body.newText;
+
+  const itemToEdit = todoList.find((item) => item.id === idToEdit);
+
+  if (!itemToEdit) {
+    // Item not found, send a 404 response
+    res.status(404).json({ message: 'Item not found' });
+  } else {
+    // Edit the item's text
+    itemToEdit.text = newText;
+    res.json({ message: 'Item edited', updatedItem: itemToEdit });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
