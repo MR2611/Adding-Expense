@@ -1,0 +1,45 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer'); // You may need to install the nodemailer package
+
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+// Create a nodemailer transporter for sending emails (you need to configure this)
+const transporter = nodemailer.createTransport({
+  service: 'your-email-service', // e.g., Gmail
+  auth: {
+    user: 'your-email@example.com',
+    pass: 'your-email-password',
+  },
+});
+
+// Endpoint for initiating the password reset process
+app.post('/password/forgotpassword', (req, res) => {
+  const { email } = req.body;
+
+  // Generate a password reset token and send it to the user's email
+  // You can implement this logic using nodemailer or any email sending service
+  const resetToken = generateResetToken(); // Implement this function
+
+  const mailOptions = {
+    from: 'your-email@example.com',
+    to: email,
+    subject: 'Password Reset',
+    text: `Your password reset token is: ${resetToken}`,
+  };
+
+  transporter.sendMail(mailOptions, (error) => {
+    if (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Failed to send password reset email' });
+    }
+    res.json({ message: 'Password reset email sent successfully' });
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
