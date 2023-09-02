@@ -1,0 +1,37 @@
+// Assuming you have a function to handle the Razorpay payment and it sends a request to the server
+function handleRazorpayPayment() {
+  // Your Razorpay payment code here
+  // ...
+
+  // On successful payment, display a success message
+  fetch('/update-user-status', { method: 'POST' }) // Endpoint to update user status
+    .then((response) => {
+      if (response.ok) {
+        // Payment successful, show success message
+        showSuccessMessage('Payment successful. You are now a premium user!');
+      } else {
+        // Handle error if the status code is not OK
+        console.error('Failed to update user status');
+      }
+    })
+    .catch((error) => {
+      console.error('Error updating user status:', error);
+    });
+}
+
+function showSuccessMessage(message) {
+  // Display a success message to the user (e.g., in a modal)
+  const modal = document.getElementById('success-modal');
+  modal.textContent = message;
+  modal.style.display = 'block';
+}
+
+// After user logs in successfully and their status is updated to premium
+// Set a flag in session storage
+sessionStorage.setItem('isPremiumUser', 'true');
+
+// Check the flag when loading a page or after login
+if (sessionStorage.getItem('isPremiumUser') === 'true') {
+  // Display a premium user message
+  document.getElementById('premium-message').style.display = 'block';
+}
